@@ -1,78 +1,31 @@
-
-
-
-let list= document.querySelector('#expenses').innerHTML;
+let list = document.querySelector('#expenses').innerHTML;
 const btn = document.querySelector('.btn');
+const URL = `http://localhost:3000/expense`;
 
-btn.addEventListener('click', e => {
+btn.addEventListener('click', async (e) => {
 
   e.preventDefault();
 
-let nameInput = document.querySelector('#name').value;
-let descriptionInput= document.querySelector('#description').value;
-let categoryInput = document.querySelector('#category').value;
-
-  const storedUserDataJSON = localStorage.getItem("details");
-  const details = storedUserDataJSON ? JSON.parse(storedUserDataJSON) : [];
+  let amountInput = document.querySelector('#amount').value;
+  let descriptionInput = document.querySelector('#description').value;
+  let categoryInput = document.querySelector('#category').value;
 
   const objInput = {
-    name: nameInput ,
-    description: descriptionInput ,
+    amount: amountInput,
+    description: descriptionInput,
     category: categoryInput
+  };
+
+  try {
+    const res = await axios.post(URL, objInput);
+    console.log(res.data);
+  } catch (error) {
+    console.log(error);
   }
 
-details.push(objInput);
-
-console.log(details);
-
-  localStorage.setItem("details", JSON.stringify(details));
-
- 
-  function updateUsersList() {
-    let print = '';
-    details.forEach((user, index) => {
-      print += `&bull; ${user.name} - ${user.description} - ${user.category}
-      <button class="dlt-button">Delete</button> <button class="edit-button">Edit </button><br> `;
-    });
-  
-    document.querySelector('#expenses').innerHTML = print;
-  
-    let deleteButtons = document.querySelectorAll(".dlt-button");
-  
-    deleteButtons.forEach((deleteButton, index) => {
-      deleteButton.addEventListener("click", () => {
-        deleteUser(index);
-      });
-    });
-
-    let editButton = document.querySelectorAll(".edit-button")
-    editButton.forEach((editButton, index)=> {
-      editButton.addEventListener("click", ()=> {
-        editUser(index);
-      })
-    })
-  }
-  
-  updateUsersList(); 
-
-  function deleteUser(index) {
-    details.splice(index, 1);
-    updateUsersList();
-    localStorage.setItem("details", JSON.stringify(details)); 
-  }
-  
- function editUser(index) {
-  const userD = details[index];
-  document.querySelector('#name').value = userD.name;
-  document.querySelector('#description').value = userD.description;
-  document.querySelector('#category').value = userD.category;
-  deleteUser(index);
-}
-
-
-  document.querySelector('#name').value = '';
+  document.querySelector('#amount').value = '';
   document.querySelector('#description').value = '';
   document.querySelector('#category').value = '';
-
-  
 });
+
+
