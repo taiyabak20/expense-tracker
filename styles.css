@@ -16,7 +16,7 @@
   ul li {
     padding: 5px;
     background: #f4f4f4;
-    margin: 5px 0;
+    margin: 2px 0;
   }
   
   header {
@@ -95,8 +95,7 @@
     font-size: 15px;
     
   }
-  .edit-button ,
-  .dlt-button{
+  button{
     background-color: #333;
     color: white;
     padding: 7px 15px;
@@ -118,6 +117,6 @@
   .expenses{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 18px;
-    padding: 0rem 18rem;
+    padding: 0rem 1rem;
 
   }

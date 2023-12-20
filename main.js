@@ -1,7 +1,8 @@
-let list = document.querySelector('#expenses').innerHTML;
+let list = document.querySelector('#expenses');
 const btn = document.querySelector('.btn');
 const URL = `http://localhost:3000/expense`;
 
+let id=null;
 btn.addEventListener('click', async (e) => {
 
   e.preventDefault();
@@ -17,15 +18,72 @@ btn.addEventListener('click', async (e) => {
   };
 
   try {
-    const res = await axios.post(URL, objInput);
-    console.log(res.data);
+    if (id == null)
+    {const res = await axios.post(URL, objInput);
+    console.log(res.data.data)
+    addExpense(objInput)
+  }
+    
+    else{
+      addExpense(objInput)
+      clearInputFields()
+      console.log(id)
+      const result = await axios.post(`${URL}/edit-expense/${id}`,objInput);
+    console.log(result)
+  
+    }
+    
   } catch (error) {
     console.log(error);
   }
+finally{clearInputFields()}
 
-  document.querySelector('#amount').value = '';
-  document.querySelector('#description').value = '';
-  document.querySelector('#category').value = '';
+
+  function clearInputFields (){
+   document.querySelector('#amount').value = '';
+document.querySelector('#description').value = '';
+document.querySelector('#category').value = 'Fuel';}
+ 
 });
 
 
+addExpense = (res)=>{
+  const expenseItem = document.createElement('li');
+
+        expenseItem.innerHTML = `
+          <span>${res.description}</span>
+          <span>${res.amount}</span>
+          <span>${res.category}</span>
+          <button class="delete-btn" id="${res.id}">Delete</button>
+          <button class="edit-btn">Edit</button>
+        `;
+  
+        const deleteButton = expenseItem.querySelector('.delete-btn');
+        deleteButton.addEventListener('click', function () {
+        list.removeChild(expenseItem);
+        const id = deleteButton.getAttribute('id')
+        //console.log(id)
+        axios.delete(`${URL}/deleteExpense/${id}`)
+        });
+  
+
+        const editButton = expenseItem.querySelector('.edit-btn')
+        editButton.addEventListener('click', function () {
+
+          list.removeChild(expenseItem);
+          id= res.id
+          document.querySelector('#amount').value = res.amount;
+          document.querySelector('#description').value = res.description;
+          document.querySelector('#category').value = res.category;
+          });
+        list.appendChild(expenseItem);
+}
+
+getAll =async ()=>{
+  const res = await axios.get(URL);
+  console.log(res.data.data)
+  res.data.data.forEach(data=>{
+    addExpense(data)
+  })
+}
+getAll()
