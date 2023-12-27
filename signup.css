@@ -53,3 +53,9 @@
     font-weight: bold;
     cursor: pointer;
   }
+  .error{
+    font-size: 35px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-align: center;
+  }
