@@ -4,12 +4,17 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const sequelize = require('./db')
 const expenseRoutes = require('./routes/routes')
+const signupRoutes = require('./routes/signup')
 
 app.use(cors())
 app.use(express.json())
 app.use('/expense', expenseRoutes)
+app.use('/signup', signupRoutes)
 
-sequelize.sync().then(result => {
+sequelize
+.sync()
+// .sync({force: true})
+.then(result => {
     app.listen(3000); 
     console.log('app is running')
 })
