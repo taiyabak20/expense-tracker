@@ -1,5 +1,5 @@
 const loginForm = document.querySelector('#login');
-const url = `http://localhost:3000/login/user`;
+const url = 'http://localhost:3000/signup/user';
 
 logingIn = async (e) =>{
     e.preventDefault();
@@ -11,15 +11,17 @@ logingIn = async (e) =>{
         email: email ,
         password: password
     };
-    console.log(inputs)
-
-    try{
-        const res = await axios.post(url, inputs)
-        console.log(res)
+console.log(inputs)
+    try {
+        const res = await axios.post(url, inputs);
+        if (res.status == 200){
+            console.log('login success')
+        }
+        else{
+            console.log('User doesnt exist')
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
     }
-    catch(err){
-        console.log(err)
-    }
-}
-
+};
 loginForm.addEventListener('submit', logingIn)

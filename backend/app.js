@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+
 const bodyParser = require('body-parser')
-const sequelize = require('../not used/db')
+const sequelize = require('./not used/db')
 const expenseRoutes = require('./routes/routes')
 const signupRoutes = require('./routes/signup')
 

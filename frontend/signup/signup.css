@@ -59,3 +59,9 @@
     color: rgb(255, 0, 0);
     text-align: center;
   }
+
+  .login{
+    font-size: 24px;
+    margin: 17rem;
+    color: #333;
+  }
