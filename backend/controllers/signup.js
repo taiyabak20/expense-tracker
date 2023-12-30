@@ -14,13 +14,17 @@ try {
         return res.status(400).json('error')
     }
     else{
-    await user.create({
-        name: name,
-        email: email,
-        password: password
-    })
-    console.log(user)
-    return res.json(user)}
+        const saltrounds = 10;
+        bcrypt.hash(password, saltrounds, async(err, hash)=>{
+            await user.create({
+                name: name,
+                email: email,
+                password: hash
+            })
+            console.log(user)
+            return res.status(201).json(user);
+        })
+   }
 }
     catch(err){
         res.status(400).send({err: err.message})
@@ -37,8 +41,10 @@ exports.loginUser = async (req, res) =>{
 
         if(userExist){
             const passwordMatch = await bcrypt.compare(password, userExist.password);
-            console.log(password, userExist.password);
+            console.log(password, userExist.password, passwordMatch);
+            
             if (passwordMatch) {
+
                 res.status(200).json('Login successful');
             } else {
                 res.status(401).json('Incorrect password');

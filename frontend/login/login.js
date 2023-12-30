@@ -15,13 +15,18 @@ console.log(inputs)
     try {
         const res = await axios.post(url, inputs);
         if (res.status == 200){
-            console.log('login success')
+            window.location= '/frontend';
+            document.querySelector('.notFound').textContent ='login success'
         }
-        else{
-            console.log('User doesnt exist')
-        }
+       
     } catch (error) {
         console.error('Error:', error.message);
+        if(error.response.status == 401){
+            document.querySelector('.notFound').textContent = 'Incorrect password!'
+        }
+        else{
+            document.querySelector('.notFound').textContent = 'User doesnt exist!';
+        }
     }
 };
 loginForm.addEventListener('submit', logingIn)

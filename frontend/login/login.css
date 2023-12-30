@@ -58,3 +58,10 @@
     margin: 17rem;
     color: #333;
   }
+
+  .notFound{
+    font-size: 35px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-align: center;
+  }

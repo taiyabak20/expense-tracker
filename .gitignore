@@ -1,3 +1,5 @@
 node_modules
 db.js
 not used
+package.json
+package-lock.json
