@@ -41,7 +41,7 @@
     display: block;
   }
   
-  #my-form input[type='text'] {
+  #my-form input {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;

@@ -19,7 +19,7 @@ btn.addEventListener('click', async (e) => {
 
   try {
     if (id == null)
-    {const res = await axios.post(URL, objInput);
+    {const res = await axios.post(`${URL}/addExpense`, objInput);
     console.log(res.data.data)
     addExpense(objInput)
   }
