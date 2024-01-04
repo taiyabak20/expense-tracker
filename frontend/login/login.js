@@ -15,11 +15,13 @@ console.log(inputs)
     try {
         const res = await axios.post(url, inputs);
         if (res.status == 200){
+            console.log(res.data)
+            localStorage.setItem('token' ,res.data)
             window.location= '/frontend';
             document.querySelector('.notFound').textContent ='login success'
         }
        
-    } catch (error) {
+    } catch (error) {        
         console.error('Error:', error.message);
         if(error.response.status == 401){
             document.querySelector('.notFound').textContent = 'Incorrect password!'

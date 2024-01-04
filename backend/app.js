@@ -6,11 +6,17 @@ const bodyParser = require('body-parser')
 const sequelize = require('./not used/db')
 const expenseRoutes = require('./routes/routes')
 const signupRoutes = require('./routes/signup')
-
+const User = require('./models/signup')
+const Expense = require('./models/expenses')
 app.use(cors())
+
 app.use(express.json())
 app.use('/expense', expenseRoutes)
 app.use('/signup', signupRoutes)
+
+
+User.hasMany(Expense);
+Expense.belongsTo(User)
 
 sequelize
 .sync()

@@ -1,7 +1,7 @@
 let list = document.querySelector('#expenses');
 const btn = document.querySelector('.btn');
 const URL = `http://localhost:3000/expense`;
-
+const token = localStorage.getItem('token')
 let id=null;
 btn.addEventListener('click', async (e) => {
 
@@ -19,16 +19,25 @@ btn.addEventListener('click', async (e) => {
 
   try {
     if (id == null)
-    {const res = await axios.post(`${URL}/addExpense`, objInput);
-    console.log(res.data.data)
-    addExpense(objInput)
+    {
+      
+     
+      const res = await axios.post(`${URL}/addExpense`, objInput, {
+        headers: {auth: token}
+      });
+      console.log(res.data.data)
+    
+    
+    addExpense(res.data.data)
   }
     
     else{
       addExpense(objInput)
       clearInputFields()
       console.log(id)
-      const result = await axios.post(`${URL}/edit-expense/${id}`,objInput);
+      const result = await axios.post(`${URL}/edit-expense/${id}`,objInput,{
+        headers: {auth: token}
+      });
     console.log(result)
   
     }
@@ -63,7 +72,9 @@ addExpense = (res)=>{
         list.removeChild(expenseItem);
         const id = deleteButton.getAttribute('id')
         //console.log(id)
-        axios.delete(`${URL}/deleteExpense/${id}`)
+        axios.delete(`${URL}/deleteExpense/${id}`,{
+          headers: {auth: token}
+        })
         });
   
 
@@ -80,8 +91,11 @@ addExpense = (res)=>{
 }
 
 getAll =async ()=>{
-  const res = await axios.get(URL);
-  console.log(res.data.data)
+  const res = await axios.get(URL,{ headers: {
+    'auth': token,
+  }}
+   );
+  //console.log(res.data.data)
   res.data.data.forEach(data=>{
     addExpense(data)
   })

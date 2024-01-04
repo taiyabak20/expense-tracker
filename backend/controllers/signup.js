@@ -1,6 +1,6 @@
 const user = require('../models/signup')
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken')
 exports.createUser = async (req, res) =>{
     const name = req.body.name;
     const email = req.body.email;
@@ -44,8 +44,12 @@ exports.loginUser = async (req, res) =>{
             console.log(password, userExist.password, passwordMatch);
             
             if (passwordMatch) {
-
-                res.status(200).json('Login successful');
+                const token = jwt.sign({userId: userExist.id}, "secret");
+                
+                // const decoded = jwt.decode(token)
+                // const verify = jwt.verify(token,  "secret")
+                // console.log(token, userExist.id, decoded, verify)
+                return res.status(200).json(token);
             } else {
                 res.status(401).json('Incorrect password');
             }
