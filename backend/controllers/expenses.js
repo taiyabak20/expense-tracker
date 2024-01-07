@@ -24,7 +24,7 @@ req.user.createExpense({
        
     })
     .then( async(data)=>{
-    req.user.totalSum = req.user.totalSum + amount;
+    req.user.totalSum = Number(req.user.totalSum) + Number(amount);
     await req.user.save()
         return res.json({data});
         //console.log(data)
@@ -36,7 +36,7 @@ exports.deleteExpense =  (req, res)=>{
     const id = req.params.id
     req.user.getExpenses({where: {id : id}})
     .then(async expense => {
-        req.user.totalAmount = Number(req.user.totalAmount) - Number(expense[0].expense)
+        req.user.totalAmount = Number(req.user.totalSum) - Number(expense[0].expense)
         console.log(expense)
         await req.user.save()
         return expense[0].destroy()

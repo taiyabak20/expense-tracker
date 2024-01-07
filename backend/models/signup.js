@@ -21,7 +21,8 @@ const User = sequelize.define('user', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    isPremiumUser: Sequelize.BOOLEAN
+    isPremiumUser: Sequelize.BOOLEAN,
+    totalSum : Sequelize.INTEGER
     
 })
 

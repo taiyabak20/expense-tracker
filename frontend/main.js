@@ -120,6 +120,10 @@ window.addEventListener('DOMContentLoaded', async()=>{
 
   else{
    document.querySelector('.premium').textContent = 'Already premium Member';
+   const Leaderboard = document.createElement('button');
+   Leaderboard.textContent = 'Show Leaderboard';
+   document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboard')
+   document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow )
   }
 })
 
@@ -145,7 +149,12 @@ async function handleClick(e){
     console.log(res)
      alert('you are premium user')
      document.querySelector('.premium').textContent = 'Already premium Member';  
-     
+     const Leaderboard = document.createElement('button');
+     Leaderboard.textContent = 'Show Leaderboard';
+     document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboard')
+   document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow )
+
+
   }
 }
 const rzp1 = new Razorpay(options);
@@ -175,23 +184,21 @@ document.querySelector('.Logout').addEventListener('click', async(e)=>{
   window.location = '/frontend/login/login.html'
 })
 
-document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow)
-
 async function leaderBoardShow(e){
-  document.querySelector('.LeaderboardList').textContent=''
-  e.preventDefault()
-  
+ document.querySelector('.LeaderboardList').textContent=''
+ e.preventDefault()
+ 
 try {  const res = await axios.get(`${URLpremium}`);
-  console.log(res)
-  res.data.forEach(entry => {
-  const leaderBoardData = document.createElement('ul')
-  leaderBoardData.innerHTML = `<li>${entry.name} <span> - ${entry.totalAmount || 0}</li>`
-  document.querySelector('.LeaderboardList').appendChild(leaderBoardData)
-    console.log(entry)
+ console.log(res)
+ res.data.forEach(entry => {
+ const leaderBoardData = document.createElement('ul')
+ leaderBoardData.innerHTML = `<li>${entry.name} <span> - ${entry.totalSum || 0}</li>`
+ document.querySelector('.LeaderboardList').appendChild(leaderBoardData)
+   console.log(entry)
 })
- }
+}
 
- catch(err){
-  console.log(error)
- }
+catch(err){
+ console.log(error)
+}
 }
