@@ -1,5 +1,5 @@
 const expenses = require('../models/expenses')
-
+const sequelize = require('../not used/db')
 exports.getAll = (req, res)=>{
 
     const isPremium = req.user.isPremiumUser
@@ -11,41 +11,57 @@ exports.getAll = (req, res)=>{
     .catch(err=> console.log(err))
 }
 
-exports.postExpense = (req, res)=>{
-
-    const amount = req.body.amount;
+exports.postExpense =async (req, res)=>{
+    const t = await sequelize.transaction();
+    try
+   { const amount = req.body.amount;
     const description = req.body.description;
     const category = req.body.category;
 
-req.user.createExpense({
+   const data =  await req.user.createExpense({
         amount: amount,
         description: description,
-        category: category,
-       
-    })
-    .then( async(data)=>{
-    req.user.totalSum = Number(req.user.totalSum) + Number(amount);
+        category: category
+    },
+    { transaction: t })
+    await t.commit();
+    req.user.totalSum += Number(amount);
     await req.user.save()
-        return res.json({data});
-        //console.log(data)
-    })
-    .catch(err => console.log(err))
+    return res.json({data});   
+}
+    catch(err) {
+        await t.rollback();
+         console.log(err)
+         return res.status(500).json({ error: 'Internal server error' });
+        }
 }
 
-exports.deleteExpense =  (req, res)=>{
-    const id = req.params.id
-    req.user.getExpenses({where: {id : id}})
-    .then(async expense => {
-        req.user.totalAmount = Number(req.user.totalSum) - Number(expense[0].expense)
-        console.log(expense)
-        await req.user.save()
-        return expense[0].destroy()
-    } )
-    .then(()=>{
-        console.log('expense deleted')
-    })
-    .catch(err => console.log(err))
-}
+exports.deleteExpense = async (req, res) => {
+    const t = await sequelize.transaction();
+
+    try {
+        const id = req.params.id;
+        const expense = await req.user.getExpenses({ where: { id: id }, transaction: t });
+        if (expense && expense.length > 0) {
+            const expenseAmount = Number(expense[0].amount);
+            req.user.totalSum -= expenseAmount;
+            //console.log(expenseAmount , req.user.totalSum)
+            await req.user.save();
+            await expense[0].destroy({ transaction: t });
+            await t.commit();
+            console.log('Expense deleted');
+            return res.status(200).json({ success: true, message: 'Expense deleted successfully' });
+        } else {
+            await t.rollback();
+            return res.status(404).json({ success: false, message: 'Expense not found' });
+        }
+    } catch (err) {
+        await t.rollback();
+        console.error(err);
+        return res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+};
+
 
 exports.editExpense = (req, res)=>{
     const id = req.params.id;
