@@ -2,10 +2,11 @@ const expenses = require('../models/expenses')
 
 exports.getAll = (req, res)=>{
 
+    const isPremium = req.user.isPremiumUser
     req.user.getExpenses({raw: true,
     attributes: ["id", "amount", "description", "category"]})
     .then(data=>{
-        return res.json({data})
+        return res.json({data, isPremium})
     })
     .catch(err=> console.log(err))
 }

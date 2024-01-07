@@ -50,6 +50,18 @@
     font-size: 15px;
   }
 
+  .premium {
+    margin: 1rem 5rem;
+    padding: 15px 20px;
+    font-size: 18px;
+    
+    
+  }
+  .Logout{
+    margin: 1rem 1rem;
+    padding: 15px 50px;
+    font-size: 18px;
+  }
   #category{
     width: 100%;
     padding: 8px;
@@ -119,4 +131,10 @@
     font-size: 18px;
     padding: 0rem 1rem;
 
+  }
+  a{
+    font-size: 35px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-align: center;
   }

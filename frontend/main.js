@@ -44,6 +44,7 @@ btn.addEventListener('click', async (e) => {
     
   } catch (error) {
     console.log(error);
+    document.querySelector('.expenses').innerHTML=`<a href="/frontend/login/login.html">Please login properly!</a>`
   }
 finally{clearInputFields()}
 
@@ -101,3 +102,73 @@ getAll =async ()=>{
   })
 }
 getAll()
+
+window.addEventListener('DOMContentLoaded', async()=>{
+  const res = await axios.get(`${URL}`, { headers: {
+    "auth": token
+  }})
+  console.log(res.data.isPremium)
+  if(!res.data.isPremium){
+    const btn =  document.querySelector('.premium')
+    const button = document.createElement('button')
+    button.textContent= 'Buy Premium Membership';
+    btn.appendChild(button);
+    button.addEventListener('click', handleClick)
+  }
+
+  else{
+   document.querySelector('.premium').textContent = 'Already premium Member';
+  }
+})
+
+async function handleClick(e){
+  const res = await axios.get(`${URL}/purchase/premium`,{
+    headers: {
+      "auth": token
+    }
+  })
+  console.log(res.data)
+
+  var options = 
+  {
+    "key": res.data.key_id,
+    "orderId": res.data.order.id,
+    "handler": async function(res)
+    {const response = axios.post(`${URL}/purchase/updateTransaction`, {
+      orderId: options.orderId,
+      paymentId: res.razorpay_payment_id
+    }, { headers: {
+      auth: token
+    }})
+    console.log(res)
+     alert('you are premium user')
+     document.querySelector('.premium').textContent = 'Already premium Member';  
+     
+  }
+}
+const rzp1 = new Razorpay(options);
+rzp1.open();
+e.preventDefault();
+
+rzp1.on('payment.failed', async function(res){
+  alert('payment failed')
+
+  const result = await axios.post(`${URL}/purchase/failed`, {
+     orderId: options.orderId,
+    "paymentId": res.error.metadata.payment_id
+  }, {
+    headers: {
+      auth: token
+    }
+  })
+  console.log(result)
+})
+}
+
+
+
+document.querySelector('.Logout').addEventListener('click', async(e)=>{
+  localStorage.removeItem("token")
+  
+  window.location = '/frontend/login/login.html'
+})
