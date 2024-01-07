@@ -185,7 +185,7 @@ try {  const res = await axios.get(`${URLpremium}`);
   console.log(res)
   res.data.forEach(entry => {
   const leaderBoardData = document.createElement('ul')
-  leaderBoardData.innerHTML = `<li>${entry.username} <span> - ${entry.totalAmount}</li>`
+  leaderBoardData.innerHTML = `<li>${entry.name} <span> - ${entry.totalAmount || 0}</li>`
   document.querySelector('.LeaderboardList').appendChild(leaderBoardData)
     console.log(entry)
 })
