@@ -51,11 +51,15 @@
   }
 
   .premium {
-    margin: 1rem 5rem;
+    margin: 0rem 5rem;
     padding: 15px 20px;
     font-size: 18px;
-    
-    
+  
+  }
+  .Leaderboard{
+    margin: 1rem 6.5rem;
+    padding: 15px 20px;
+    font-size: 18px;
   }
   .Logout{
     margin: 1rem 1rem;

@@ -1,6 +1,8 @@
 let list = document.querySelector('#expenses');
 const btn = document.querySelector('.btn');
 const URL = `http://localhost:3000/expense`;
+const URLpremium = `http://localhost:3000/premium`;
+
 const token = localStorage.getItem('token')
 let id=null;
 btn.addEventListener('click', async (e) => {
@@ -172,3 +174,24 @@ document.querySelector('.Logout').addEventListener('click', async(e)=>{
   
   window.location = '/frontend/login/login.html'
 })
+
+document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow)
+
+async function leaderBoardShow(e){
+  document.querySelector('.LeaderboardList').textContent=''
+  e.preventDefault()
+  
+try {  const res = await axios.get(`${URLpremium}`);
+  console.log(res)
+  res.data.forEach(entry => {
+  const leaderBoardData = document.createElement('ul')
+  leaderBoardData.innerHTML = `<li>${entry.username} <span> - ${entry.totalAmount}</li>`
+  document.querySelector('.LeaderboardList').appendChild(leaderBoardData)
+    console.log(entry)
+})
+ }
+
+ catch(err){
+  console.log(error)
+ }
+}
