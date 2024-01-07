@@ -23,17 +23,22 @@ req.user.createExpense({
         category: category,
        
     })
-    .then(data =>{
+    .then( async(data)=>{
+    req.user.totalSum = req.user.totalSum + amount;
+    await req.user.save()
         return res.json({data});
         //console.log(data)
     })
     .catch(err => console.log(err))
 }
 
-exports.deleteExpense = (req, res)=>{
+exports.deleteExpense =  (req, res)=>{
     const id = req.params.id
     req.user.getExpenses({where: {id : id}})
-    .then(expense => {
+    .then(async expense => {
+        req.user.totalAmount = Number(req.user.totalAmount) - Number(expense[0].expense)
+        console.log(expense)
+        await req.user.save()
         return expense[0].destroy()
     } )
     .then(()=>{
