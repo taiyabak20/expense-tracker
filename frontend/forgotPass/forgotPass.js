@@ -1,5 +1,3 @@
-const { emit } = require("nodemon");
-
 const Url = 'http://localhost:3000/called/password/forgotpassword';
 document.querySelector('.forgotPass').addEventListener('submit', forgotPass)
 

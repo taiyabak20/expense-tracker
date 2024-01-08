@@ -3,6 +3,7 @@ const User = require('../models/signup')
 const forgotPass = require('../models/forgotPass');
 const uuid = require('uuid')
 const bcrypt = require('bcrypt')
+require('dotenv').config();
 
 exports.forgotEmail =async (req, res) => {
 const email = req.body.email;
@@ -19,7 +20,7 @@ const email = req.body.email;
     const client = SibApiV3Sdk.ApiClient.instance;
     //console.log(client)
     const apiKey = client.authentications['api-key'];
-    apiKey.apiKey =`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`;
+    apiKey.apiKey =process.env.api_key;
     //console.log(apiKey.apiKey)
 
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
