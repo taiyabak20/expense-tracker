@@ -7,9 +7,13 @@
 </head>
 <body>
     <header>Day to Day Expenses</header>
-    <p class="Date"></p>
-    <h1 class="Year"></h1>
-    <h2 class="Month"></h2>
+    <h1 class="today"></h1>
+    <h2>Get data from date:</label>
+        <input class="Date" type="date">
+        <input class="submitdate" type="submit">
+    </h2>
+    
+    
     <table>
         <thead>
         <tr>
@@ -21,7 +25,7 @@
         </tr>
     </thead>
         <tr>
-            <td class="date"></td>
+            <td class="dateH"></td>
             <td class="description"></td>
             <td class="category"></td>
             <td class="income"></td>
@@ -73,6 +77,9 @@
     </table>
 
     <button class="download">Download</button>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
 
