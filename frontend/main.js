@@ -151,7 +151,7 @@ async function handleClick(e){
      document.querySelector('.premium').textContent = 'Already premium Member';  
      const Leaderboard = document.createElement('button');
      Leaderboard.textContent = 'Show Leaderboard';
-     document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboard')
+     document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboardz')
    document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow )
 
 
