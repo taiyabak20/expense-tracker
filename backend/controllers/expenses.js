@@ -92,3 +92,21 @@ exports.downloadExpense =async (req, res) =>{
         res.status(500).json({fileUrl: '', success: false, err: err})
     }
 }
+
+exports.getExpenses = async (req, res) => {
+    try{
+        const page = req.query.page || 1;
+        const exp = req.user.getExpenses({
+            offset : (page - 1)*5,
+            limit: 5
+        })
+        const totalExp = req.user.countExpenses();
+        const [expenses, totalExpenses] = await Promise.all([exp, totalExp])
+
+        return res.json({expenses, totalExpenses})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({success : false, msg: "Internal server error"})
+    }
+}
