@@ -1,14 +1,26 @@
 const sequelize = require('../not used/db')
 const s3service = require('../services/s3services')
-exports.getAll = (req, res)=>{
-    
-    const isPremium = req.user.isPremiumUser
-    req.user.getExpenses({raw: true,
-    attributes: ["id", "amount", "description", "category"]})
-    .then(data=>{
-        return res.json({data, isPremium})
-    })
-    .catch(err=> console.log(err))
+exports.getAll =async (req, res)=>{
+    try{
+        const isPremium = req.user.isPremiumUser
+        const page = req.query.page || 1;
+        //console.log(page)
+        const exp =await req.user.getExpenses({
+            offset : (page - 1)*5,
+            limit: 5
+        })
+        const totalExp = req.user.countExpenses();
+        const [expenses, totalExpenses] = await Promise.all([exp, totalExp])
+        const totalPages = Math.ceil(totalExpenses/5);
+
+        //console.log(totalExpenses, totalPages)
+        return res.json({expenses, totalExpenses, totalPages, isPremium})
+    }
+  
+    catch(err){
+        console.log(err)
+        return res.status(500).json({success : false, msg: "Internal server error"})
+    } 
 }
 
 exports.postExpense =async (req, res)=>{
@@ -90,23 +102,5 @@ exports.downloadExpense =async (req, res) =>{
     }
     catch(err){
         res.status(500).json({fileUrl: '', success: false, err: err})
-    }
-}
-
-exports.getExpenses = async (req, res) => {
-    try{
-        const page = req.query.page || 1;
-        const exp = req.user.getExpenses({
-            offset : (page - 1)*5,
-            limit: 5
-        })
-        const totalExp = req.user.countExpenses();
-        const [expenses, totalExpenses] = await Promise.all([exp, totalExp])
-
-        return res.json({expenses, totalExpenses})
-    }
-    catch(err){
-        console.log(err)
-        return res.status(500).json({success : false, msg: "Internal server error"})
     }
 }

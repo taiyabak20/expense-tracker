@@ -22,14 +22,10 @@ btn.addEventListener('click', async (e) => {
   try {
     if (id == null)
     {
-      
-     
       const res = await axios.post(`${URL}/addExpense`, objInput, {
         headers: {auth: token}
       });
       console.log(res.data.data)
-    
-    
     addExpense(res.data.data)
   }
     
@@ -93,22 +89,14 @@ addExpense = (res)=>{
         list.appendChild(expenseItem);
 }
 
-getAll =async ()=>{
-  const res = await axios.get(URL,{ headers: {
-    'auth': token,
-  }}
-   );
-  //console.log(res.data.data)
-  res.data.data.forEach(data=>{
-    addExpense(data)
-  })
-}
-getAll()
 
 window.addEventListener('DOMContentLoaded', async()=>{
   const res = await axios.get(`${URL}`, { headers: {
     "auth": token
   }})
+
+  getAll(res)
+
   console.log(res.data.isPremium)
   if(!res.data.isPremium){
     const btn =  document.querySelector('.premium')
@@ -222,3 +210,34 @@ async function download (e){
   a.download = 'myexpense.esv';
   a.click()
 }
+
+
+getAll =async (res)=>{
+  res.data.expenses.forEach(data=>{
+    addExpense(data)
+  })
+  console.log(res.data.totalPages)
+  const pageNumber = document.querySelector('.pageNumber')
+
+  for(let i= 1; i<= res.data.totalPages; i++){
+    const btn = document.createElement('button')
+    pageNumber.appendChild(btn).classList.add(i)
+    btn.textContent= `page${i}`;
+    btn.addEventListener('click',async (e)=>{
+      const page = btn.getAttribute('class')
+      //console.log(page)   
+    const result = await axios.get(`${URL}?page=${page}`,{ headers: {
+      'auth': token,
+    }}
+     );
+     //console.log(result)
+     document.querySelector('.expenses').textContent= ""
+     result.data.expenses.forEach(data=>{  
+      addExpense(data)
+    })
+    //console.log(result.data.expenses)
+  })
+  }
+}
+
+
