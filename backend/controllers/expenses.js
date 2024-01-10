@@ -1,7 +1,7 @@
-const expenses = require('../models/expenses')
 const sequelize = require('../not used/db')
+const s3service = require('../services/s3services')
 exports.getAll = (req, res)=>{
-
+    
     const isPremium = req.user.isPremiumUser
     req.user.getExpenses({raw: true,
     attributes: ["id", "amount", "description", "category"]})
@@ -74,4 +74,21 @@ exports.editExpense = (req, res)=>{
     })
     .then(()=> console.log('update successful'))
     .catch(err => console.log(err))
+}
+
+exports.downloadExpense =async (req, res) =>{
+
+    try{
+        const expense = await req.user.getExpenses();
+        const stringified = JSON.stringify(expense)
+        const userId = req.user.id;
+        //console.log(userId)
+        const filename = `Expense ${userId}/ ${new Date}.txt`;
+        const fileUrl =await s3service.uploadToS3(stringified, filename);
+        //console.log(fileUrl)
+        res.json({fileUrl, success: true})
+    }
+    catch(err){
+        res.status(500).json({fileUrl: '', success: false, err: err})
+    }
 }

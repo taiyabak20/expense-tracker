@@ -116,6 +116,9 @@ window.addEventListener('DOMContentLoaded', async()=>{
     button.textContent= 'Buy Premium Membership';
     btn.appendChild(button);
     button.addEventListener('click', handleClick)
+    document.querySelector('.download').addEventListener('click', (e)=>{
+      alert('not a premium user')
+    })
   }
 
   else{
@@ -124,6 +127,8 @@ window.addEventListener('DOMContentLoaded', async()=>{
    Leaderboard.textContent = 'Show Leaderboard';
    document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboard')
    document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow )
+   document.querySelector('.download').addEventListener('click', download)
+
   }
 })
 
@@ -151,7 +156,7 @@ async function handleClick(e){
      document.querySelector('.premium').textContent = 'Already premium Member';  
      const Leaderboard = document.createElement('button');
      Leaderboard.textContent = 'Show Leaderboard';
-     document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboardz')
+     document.querySelector('.premium').appendChild(Leaderboard).classList.add('Leaderboard')
    document.querySelector('.Leaderboard').addEventListener('click', leaderBoardShow )
 
 
@@ -188,7 +193,8 @@ async function leaderBoardShow(e){
  document.querySelector('.LeaderboardList').textContent=''
  e.preventDefault()
  
-try {  const res = await axios.get(`${URLpremium}`);
+try {  
+ const res = await axios.get(`${URLpremium}`);
  console.log(res)
  res.data.forEach(entry => {
  const leaderBoardData = document.createElement('ul')
@@ -201,4 +207,18 @@ try {  const res = await axios.get(`${URLpremium}`);
 catch(err){
  console.log(error)
 }
+}
+
+async function download (e){
+  const res = await axios.get(`${URL}/download`,
+  {
+    headers: {
+      auth: token
+    }
+  });
+  console.log(res.data)
+  let a = document.createElement("a");
+  a.href = res.data.fileUrl;
+  a.download = 'myexpense.esv';
+  a.click()
 }

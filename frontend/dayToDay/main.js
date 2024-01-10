@@ -15,9 +15,21 @@ document.querySelector('.btn').addEventListener('click', (e) =>{
 })
 }
 else{
-    document.querySelector('.btn').addEventListener('click', (e) =>{
+    document.querySelector('.btn').addEventListener('click',async (e) =>{
         e.preventDefault();
-    })
+            const res = await axios.get(`${expenseUrl}/download`,
+            {
+              headers: {
+                auth: token
+              }
+            });
+            console.log(res.data)
+            let a = document.createElement("a");
+            a.href = res.data.fileUrl;
+            a.download = 'myexpense.esv';
+            a.click()
+          }
+    )
 }
 
       console.log(res.data.isPremium)
@@ -55,6 +67,7 @@ async function submityear (e){
     const data = await axios.post(`${url}/year`, {year: year}, {
         headers: {auth: token}
       })
+
       const tableBody = document.querySelector('.yearTable');
       showData(data, tableBody)
       console.log(data)
@@ -62,13 +75,24 @@ async function submityear (e){
 }
 
 async function showData(data, tableBody){
-
+    let current_date;
     let sum = 0;
+    let sum2 = 0
     data.data.forEach(entry =>{
 
-        sum += entry.amount;
-        console.log(sum)
-
+        if(tableBody == document.querySelector('.yearTable')){
+            console.log("fndsjhfj")
+            entry.createdAt =  new Date(entry.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+            });
+        }
+        else{
+            entry.createdAt =  new Date(entry.createdAt).toDateString('en-US');
+        }
+if(current_date == entry.createdAt || current_date == null){
+    sum += entry.amount;
+    sum2 += entry.amount;
      const row = tableBody.insertRow();
 
      const dateCell = row.insertCell(0);
@@ -80,7 +104,32 @@ async function showData(data, tableBody){
      descriptionCell.textContent = entry.description;
      categoryCell.textContent = entry.category;
      expenseCell.textContent = entry.amount;
+     current_date = entry.createdAt;
+    
+}
+else{
+    const row2 =  tableBody.insertRow();
+    row2.insertCell(0);
+    row2.insertCell(1);
+    row2.insertCell(2);
+    row2.insertCell(3).innerHTML =`<b>Total Expense: ${sum}</b>`;
+sum = 0;
+sum += entry.amount;
+sum2 += entry.amount;
+
+     const row = tableBody.insertRow();
+
+     const dateCell = row.insertCell(0);
+     const descriptionCell = row.insertCell(1);
+     const categoryCell = row.insertCell(2);
+     const expenseCell = row.insertCell(3);
      
+     dateCell.textContent = entry.createdAt; 
+     descriptionCell.textContent = entry.description;
+     categoryCell.textContent = entry.category;
+     expenseCell.textContent = entry.amount;
+     current_date = entry.createdAt;
+}
     })
 
     const row = tableBody.insertRow();
@@ -88,5 +137,11 @@ async function showData(data, tableBody){
      const descriptionCell = row.insertCell(1);
      const categoryCell = row.insertCell(2);
      const expenseCell = row.insertCell(3).innerHTML = `<b>Total Expense: ${sum}</b>`
+
+     const row2 = tableBody.insertRow();
+     row2.insertCell(0)
+     row2.insertCell(1)
+     row2.insertCell(2)
+     row2.insertCell(3).innerHTML = `<b>Grand Total Expense : ${sum2}</b>`
 
 }
