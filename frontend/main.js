@@ -91,7 +91,8 @@ addExpense = (res)=>{
 
 
 window.addEventListener('DOMContentLoaded', async()=>{
-  const res = await axios.get(`${URL}`, { headers: {
+  const numOfExpenses = localStorage.getItem('numOfExpenses')
+  const res = await axios.post(`${URL}`, {numOfExpenses, numOfExpenses}, { headers: {
     "auth": token
   }})
 
@@ -211,6 +212,12 @@ async function download (e){
   a.click()
 }
 
+document.querySelector('.numOfExpensesBtn').addEventListener('click', (e)=>{
+  e.preventDefault();
+  const numOfExpenses = document.querySelector('.numOfExpenses').value;
+  console.log(numOfExpenses)
+  localStorage.setItem('numOfExpenses', numOfExpenses)
+})
 
 getAll =async (res)=>{
   res.data.expenses.forEach(data=>{
@@ -225,8 +232,9 @@ getAll =async (res)=>{
     btn.textContent= `page${i}`;
     btn.addEventListener('click',async (e)=>{
       const page = btn.getAttribute('class')
-      //console.log(page)   
-    const result = await axios.get(`${URL}?page=${page}`,{ headers: {
+      const numOfExpenses = localStorage.getItem('numOfExpenses')|| 5;
+      //console.log(numOfExpenses)
+    const result = await axios.post(`${URL}?page=${page[0]}` ,{numOfExpenses: numOfExpenses},{ headers: {
       'auth': token,
     }}
      );

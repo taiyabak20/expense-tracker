@@ -3,7 +3,7 @@ const router = express.Router()
 
 const expenseController = require('../controllers/expenses')
 const auth = require('../controllers/auth')
-router.get('/', auth, expenseController.getAll)
+router.post('/', auth, expenseController.getAll)
 
 router.post('/addExpense', auth, expenseController.postExpense)
 router.delete('/deleteExpense/:id', auth, expenseController.deleteExpense)

@@ -5,13 +5,14 @@ exports.getAll =async (req, res)=>{
         const isPremium = req.user.isPremiumUser
         const page = req.query.page || 1;
         //console.log(page)
+        const numOfExpenses = Number(req.body.numOfExpenses)
         const exp =await req.user.getExpenses({
-            offset : (page - 1)*5,
-            limit: 5
+            offset : (page - 1)*numOfExpenses,
+            limit: numOfExpenses
         })
         const totalExp = req.user.countExpenses();
         const [expenses, totalExpenses] = await Promise.all([exp, totalExp])
-        const totalPages = Math.ceil(totalExpenses/5);
+        const totalPages = Math.ceil(totalExpenses/numOfExpenses);
 
         //console.log(totalExpenses, totalPages)
         return res.json({expenses, totalExpenses, totalPages, isPremium})
