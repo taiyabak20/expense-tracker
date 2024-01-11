@@ -149,6 +149,7 @@ async function handleClick(e){
     }})
     console.log(response)
      alert('you are premium user')
+     localStorage.setItem('premium' , 1)
      document.querySelector('.premium').textContent = 'Already premium Member';  
      const Leaderboard = document.createElement('button');
      Leaderboard.textContent = 'Show Leaderboard';

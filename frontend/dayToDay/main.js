@@ -1,19 +1,18 @@
 const url = `http://localhost:3000/report`;
-const expenseUrl = `http://localhost:3000/expense`;
-
+const expenseUrl = `http://localhost:3000/expense/`;
 const token = localStorage.getItem('token')
+const premium = localStorage.getItem('premium')
 window.addEventListener('DOMContentLoaded', async(e)=>{
     const date = new Date()
     document.querySelector('.today').textContent = date.toDateString('en-US');
-    const res = await axios.get(`${expenseUrl}`, { headers: {
-        "auth": token
-      }})
-if(!res.data.isPremium){
+   console.log(premium)
+if(!premium){
 document.querySelector('.btn').addEventListener('click', (e) =>{
     e.preventDefault();
     alert('Not a premium Member')
 })
 }
+
     document.querySelector('.btn').addEventListener('click',async (e) =>{
         e.preventDefault();
             const res = await axios.get(`${expenseUrl}/download`,
@@ -29,8 +28,6 @@ document.querySelector('.btn').addEventListener('click', (e) =>{
             a.click()
           }
     )
-
-      console.log(res.data.isPremium)
 })
 
 document.querySelector('.submitdate').addEventListener('click', submitdate)

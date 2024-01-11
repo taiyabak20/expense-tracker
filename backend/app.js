@@ -1,7 +1,12 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-
+const helmet  = require('helmet')
+const compression = require('compression')
+const morgan = require('morgan')
+const path = require('path')
+const fs = require('fs')
+require('dotenv').config()
 const bodyParser = require('body-parser')
 const sequelize = require('./utils/db')
 const expenseRoutes = require('./routes/routes')
@@ -15,8 +20,12 @@ const Expense = require('./models/expenses')
 const Order = require('./models/orders')
 const ForgotPasswordRequests = require('./models/forgotPass')
 const Downloadedfiles = require('./models/filesDownloaded')
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'aceess.log'),
+ {flag: 'a'});
 app.use(cors())
-
+app.use(helmet())
+app.use(compression())
+app.use(morgan('combined', {stream: accessLogStream}))
 app.use(express.json())
 app.use('/expense', expenseRoutes)
 app.use('/signup', signupRoutes)
@@ -37,7 +46,7 @@ sequelize
 .sync()
 // .sync({force: true})
 .then(result => {
-    app.listen(3000); 
+    app.listen(process.env.PORT || 3000); 
     console.log('app is running')
 })
 .catch(err => console.log(err))
