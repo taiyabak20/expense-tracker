@@ -137,8 +137,15 @@
 
   }
   a{
-    font-size: 35px;
-    font-weight: bold;
-    color: rgb(255, 0, 0);
+    font-size: 18px;
+    color: rgb(85, 85, 85);
     text-align: center;
+  }
+
+  .hide{
+    display: none;
+  }
+
+  .urls{
+    font-size: 20px;
   }

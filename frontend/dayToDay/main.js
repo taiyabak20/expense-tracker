@@ -14,7 +14,6 @@ document.querySelector('.btn').addEventListener('click', (e) =>{
     alert('Not a premium Member')
 })
 }
-else{
     document.querySelector('.btn').addEventListener('click',async (e) =>{
         e.preventDefault();
             const res = await axios.get(`${expenseUrl}/download`,
@@ -30,7 +29,6 @@ else{
             a.click()
           }
     )
-}
 
       console.log(res.data.isPremium)
 })

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-const sequelize = require('../not used/db')
+const sequelize = require('../utils/db')
 
 const expenses = sequelize.define('expenses', {
     id: {

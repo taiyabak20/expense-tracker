@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const sequelize = require('../not used/db')
+const sequelize = require('../utils/db')
 
 const ForgotPasswordRequests = sequelize.define('ForgotPasswordRequests',{
     id: {

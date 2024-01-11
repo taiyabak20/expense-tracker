@@ -1,6 +1,6 @@
 node_modules
 db.js
-not used
+utils
 package.json
 package-lock.json
 .env

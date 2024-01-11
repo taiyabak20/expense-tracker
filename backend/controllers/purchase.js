@@ -9,25 +9,26 @@ var rzp = new Razorpay({
 })
 
 exports.purchasePremium = async (req, res) =>{
-    try {      
-    const amount = 2500;
-
-    const result = await rzp.orders.create({amount, currency: "INR"}, (err, order)=>{
-        if(err){
-            throw new Error(JSON.stringify(err))
-        }
-         req.user.createOrder({orderId: order.id, status: 'Pending'})
-       
-        .then(()=>{
-            return res.status(201).json({order, key_id: rzp.key_id})
-        })
-        .catch(err =>{
-            throw new Error(err)
-        })
-    })}
+    try {   
+         
+    const options = {amount: 25000, currency: "INR", receipt: "order_rcptid_11"};
+{
+    const order = await rzp.orders.create(options)
+     await req.user.createOrder({orderId: order.id, status: 'Pending'})
+    console.log(order)
+    return res.status(201).json({order: order, key_id: rzp.key_id})
+  }
+    //     .catch(err =>{
+    //         throw new Error(err)
+    //     })
+    // })
+    
+  }
     catch(err){
         console.log(err)
     }
+
+   
 }
 
 exports.successfullTransaction = async(req,res)=>{

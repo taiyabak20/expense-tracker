@@ -91,13 +91,18 @@ addExpense = (res)=>{
 
 
 window.addEventListener('DOMContentLoaded', async()=>{
+  downloadedUrls()
+  
   const numOfExpenses = localStorage.getItem('numOfExpenses')
   const res = await axios.post(`${URL}`, {numOfExpenses, numOfExpenses}, { headers: {
     "auth": token
   }})
 
   getAll(res)
-
+  if(numOfExpenses > res.data.totalExpenses){
+    document.querySelector('#next').classList.add('hide')
+  }
+ 
   console.log(res.data.isPremium)
   if(!res.data.isPremium){
     const btn =  document.querySelector('.premium')
@@ -133,14 +138,16 @@ async function handleClick(e){
   {
     "key": res.data.key_id,
     "orderId": res.data.order.id,
+    "amount" : res.data.order.amount,
     "handler": async function(res)
     {const response = axios.post(`${URL}/purchase/updateTransaction`, {
       orderId: options.orderId,
-      paymentId: res.razorpay_payment_id
+      paymentId: res.razorpay_payment_id,
+      "razorpay_signature": res.razorpay_signature
     }, { headers: {
       auth: token
     }})
-    console.log(res)
+    console.log(response)
      alert('you are premium user')
      document.querySelector('.premium').textContent = 'Already premium Member';  
      const Leaderboard = document.createElement('button');
@@ -152,9 +159,7 @@ async function handleClick(e){
   }
 }
 const rzp1 = new Razorpay(options);
-rzp1.open();
-e.preventDefault();
-
+console.log(options)
 rzp1.on('payment.failed', async function(res){
   alert('payment failed')
 
@@ -168,6 +173,8 @@ rzp1.on('payment.failed', async function(res){
   })
   console.log(result)
 })
+rzp1.open();
+e.preventDefault();
 }
 
 
@@ -212,40 +219,110 @@ async function download (e){
   a.click()
 }
 
-document.querySelector('.numOfExpensesBtn').addEventListener('click', (e)=>{
+document.querySelector('.numOfExpensesBtn').addEventListener('click',async (e)=>{
   e.preventDefault();
   const numOfExpenses = document.querySelector('.numOfExpenses').value;
-  console.log(numOfExpenses)
+  //console.log(numOfExpenses)
   localStorage.setItem('numOfExpenses', numOfExpenses)
+  document.querySelector('.expenses').textContent = ""
+  const res = await axios.post(`${URL}`, {numOfExpenses, numOfExpenses}, { headers: {
+    "auth": token
+  }})
+  if(numOfExpenses > res.data.totalExpenses){
+    document.querySelector('#next').classList.add('hide')
+  }
+  else{
+    document.querySelector('#next').classList.remove('hide')
+
+  }
+  getAll(res)
+  
 })
 
 getAll =async (res)=>{
   res.data.expenses.forEach(data=>{
     addExpense(data)
   })
-  console.log(res.data.totalPages)
-  const pageNumber = document.querySelector('.pageNumber')
 
-  for(let i= 1; i<= res.data.totalPages; i++){
-    const btn = document.createElement('button')
-    pageNumber.appendChild(btn).classList.add(i)
-    btn.textContent= `page${i}`;
-    btn.addEventListener('click',async (e)=>{
-      const page = btn.getAttribute('class')
-      const numOfExpenses = localStorage.getItem('numOfExpenses')|| 5;
-      //console.log(numOfExpenses)
-    const result = await axios.post(`${URL}?page=${page[0]}` ,{numOfExpenses: numOfExpenses},{ headers: {
-      'auth': token,
-    }}
-     );
-     //console.log(result)
-     document.querySelector('.expenses').textContent= ""
-     result.data.expenses.forEach(data=>{  
-      addExpense(data)
-    })
-    //console.log(result.data.expenses)
-  })
-  }
 }
 
 
+document.querySelector('.pageNumber').addEventListener('click',async (e)=>{
+  const numOfExpenses = localStorage.getItem('numOfExpenses')|| 5;
+const page = e.target.value;
+//console.log(page)
+const result = await axios.post(`${URL}?page=${page}` ,{numOfExpenses: numOfExpenses},{ headers: {
+  'auth': token,
+}}
+ );
+ document.querySelector('.expenses').textContent= ""
+ result.data.expenses.forEach(data=>{  
+  addExpense(data)
+})
+//console.log(e.target.id)
+if(result.data.totalExpenses < numOfExpenses){
+  next.classList.add('hide')
+}
+if(e.target.id == 'next'){
+
+  prev.classList.remove('hide')
+  prev.textContent = curr.textContent
+  prev.value = curr.value
+  
+  curr.textContent = next.textContent
+  curr.value = next.value
+
+  if(result.data.totalExpenses > numOfExpenses * page){
+      next.value = +page + 1
+      next.textContent = +page + 1
+}else{
+  next.classList.add('hide')
+}
+}
+else if(e.target.id == 'prev'){
+
+  if(page > 1){
+    next.classList.remove('hide')
+prev.textContent = page-1;
+prev.value = page-1
+
+curr.textContent = page;
+curr.value = page;
+
+next.textContent = +page+1;
+next.value = +page+1
+}
+else{
+  prev.classList.add('hide')
+  curr.textContent = 1;
+  curr.value = 1
+  if(result.data.totalExpenses > numOfExpenses * page){
+    next.value = 2;
+    next.textContent = 2
+    next.classList.remove('hide')
+  }
+  else{
+    next.classList.add('hide')
+  }
+}
+}
+})
+async function downloadedUrls(){
+const url = await axios.get(`${URL}/downloadedFiles`,
+{
+  headers: {
+    auth: token
+  }
+});
+url.data.url.forEach(entry =>{
+  const li = document.createElement('li')
+  const url = document.createElement('a')
+  url.href = entry.url;
+  url.download = new Date (entry.createdAt).toDateString('en-US') + '-expense.txt'
+  url.textContent = new Date (entry.createdAt).toDateString('en-US') + '-expense.txt'
+
+  li.appendChild(url)
+  document.querySelector('.urls').appendChild(li)
+})
+
+  console.log(url.data.url)}

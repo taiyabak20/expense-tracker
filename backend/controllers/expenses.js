@@ -1,4 +1,4 @@
-const sequelize = require('../not used/db')
+const sequelize = require('../utils/db')
 const s3service = require('../services/s3services')
 exports.getAll =async (req, res)=>{
     try{
@@ -98,10 +98,19 @@ exports.downloadExpense =async (req, res) =>{
         //console.log(userId)
         const filename = `Expense ${userId}/ ${new Date}.txt`;
         const fileUrl =await s3service.uploadToS3(stringified, filename);
-        //console.log(fileUrl)
+        await req.user.createDownloadedfile({url: fileUrl})
+
+        // console.log(req.user)
+        // console.log(fileUrl)
         res.json({fileUrl, success: true})
+       
     }
     catch(err){
         res.status(500).json({fileUrl: '', success: false, err: err})
     }
+}
+
+exports.downloadedFiles =async (req, res)=>{
+    const urls =await req.user.getDownloadedfiles()
+    return res.json({url : urls})
 }
