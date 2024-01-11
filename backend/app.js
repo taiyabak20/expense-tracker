@@ -20,7 +20,7 @@ const Expense = require('./models/expenses')
 const Order = require('./models/orders')
 const ForgotPasswordRequests = require('./models/forgotPass')
 const Downloadedfiles = require('./models/filesDownloaded')
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'aceess.log'),
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
  {flag: 'a'});
 app.use(cors())
 app.use(helmet())

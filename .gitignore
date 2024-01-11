@@ -1,6 +1,5 @@
 node_modules
-db.js
-utils
+.vscode
 package.json
 package-lock.json
 .env

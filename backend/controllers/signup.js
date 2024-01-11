@@ -1,6 +1,7 @@
 const user = require('../models/signup')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 exports.createUser = async (req, res) =>{
     const name = req.body.name;
     const email = req.body.email;
@@ -44,7 +45,7 @@ exports.loginUser = async (req, res) =>{
             console.log(password, userExist.password, passwordMatch);
             
             if (passwordMatch) {
-                const token = jwt.sign({userId: userExist.id}, "secret");
+                const token = jwt.sign({userId: userExist.id}, process.env.JWT_SECRET);
                 
                 // const decoded = jwt.decode(token)
                 // const verify = jwt.verify(token,  "secret")
