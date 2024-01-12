@@ -33,6 +33,9 @@ app.use('/expense/purchase', purchaseRoutes)
 app.use('/premium', premiumRoutes)
 app.use('/', forgotPassRoutes)
 app.use('/report', reportRoutes)
+app.use((req, res) =>{
+    res.sendFile(path.join(__dirname, `../frontend/${req.url}`))
+})
 User.hasMany(Expense);
 Expense.belongsTo(User)
 User.hasMany(Order)
