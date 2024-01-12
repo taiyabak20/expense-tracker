@@ -1,4 +1,4 @@
-const Reseturl = 'http://localhost:3000/resetpassword'
+const Reseturl = 'http://3.88.58.3:3000/resetpassword'
 let resetId = 
 window.addEventListener('load' , async()=>{
     let url = window.location.href
