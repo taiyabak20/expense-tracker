@@ -51,19 +51,18 @@
   }
 
   .premium {
-    margin: 0rem 5rem;
+    margin: 0rem 5.5rem;
     padding: 15px 20px;
     font-size: 18px;
   
   }
   .Leaderboard{
-    margin: 1rem 0rem;
-    padding: 15px 20px;
+    padding: 10px 20px;
     font-size: 18px;
   }
   .Logout{
-    margin: 1rem 1rem;
-    padding: 15px 50px;
+    margin: 0rem 0rem;
+    padding: 10px 30px;
     font-size: 18px;
   }
   #category{
@@ -148,4 +147,9 @@
 
   .urls{
     font-size: 20px;
+  }
+
+  .categorisedExpenses{
+   margin: 1rem 6rem;
+    
   }

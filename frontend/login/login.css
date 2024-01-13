@@ -65,3 +65,10 @@
     color: rgb(255, 0, 0);
     text-align: center;
   }
+
+  .forgotPass{
+    margin: 1rem 11rem;
+  }
+  .signup{
+    margin: 1rem 21.5rem;
+  }

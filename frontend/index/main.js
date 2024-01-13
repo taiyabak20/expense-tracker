@@ -98,10 +98,12 @@ window.addEventListener('DOMContentLoaded', async()=>{
     "auth": token
   }})
 
-  getAll(res)
   if(numOfExpenses > res.data.totalExpenses){
     document.querySelector('#next').classList.add('hide')
   }
+  console.log(numOfExpenses > res.data.totalExpenses)
+  getAll(res)
+ 
  
   console.log(res.data.isPremium)
   if(!res.data.isPremium){
@@ -116,6 +118,7 @@ window.addEventListener('DOMContentLoaded', async()=>{
   }
 
   else{
+
    document.querySelector('.premium').textContent = 'Already premium Member';
    const Leaderboard = document.createElement('button');
    Leaderboard.textContent = 'Show Leaderboard';
