@@ -13,7 +13,7 @@ window.addEventListener('load' , async()=>{
      console.log(result)
     if(!result.data.isActive){
         alert("link expired get a new one")
-        location.href ='forgot-password.html'
+        location.href ='forgotPass.html'
     }
     
 })
@@ -30,7 +30,7 @@ async function resetPass(e){
             const res = await axios.post(`${Reseturl}/${resetId}`, {newPass})
             console.log(res)
             if(res.status == 200){
-                window.location = '/frontend/login/login.html'
+                window.location = '/login'
             }
         }
         catch(err){

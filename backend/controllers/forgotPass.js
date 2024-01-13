@@ -39,7 +39,7 @@ const email = req.body.email;
             to: receivers,
             subject: 'For resetting Password',
             htmlContent: '<p>Click the link to reset your password</p>'+
-            `<a href="http://127.0.0.1:5500/frontend/forgotPass/resetPass.html?reset=${details.id}">click here</a>`,
+            `<a href="http://3.215.255.202/forgotPass/resetPass.html?reset=${details.id}">click here</a>`,
         })
         
      }

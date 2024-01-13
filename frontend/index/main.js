@@ -42,7 +42,7 @@ btn.addEventListener('click', async (e) => {
     
   } catch (error) {
     console.log(error);
-    document.querySelector('.expenses').innerHTML=`<a href="/frontend/login/login.html">Please login properly!</a>`
+    document.querySelector('.expenses').innerHTML=`<a href="/login">Please login properly!</a>`
   }
 finally{clearInputFields()}
 
@@ -183,7 +183,7 @@ e.preventDefault();
 document.querySelector('.Logout').addEventListener('click', async(e)=>{
   localStorage.removeItem("token")
   
-  window.location = '/frontend/login/login.html'
+  window.location = '/login'
 })
 
 async function leaderBoardShow(e){

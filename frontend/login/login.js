@@ -17,7 +17,7 @@ console.log(inputs)
         if (res.status == 200){
             console.log(res.data)
             localStorage.setItem('token' ,res.data)
-            window.location= '/frontend/index';
+            window.location= '/index';
             document.querySelector('.notFound').textContent ='login success'
         }
        
