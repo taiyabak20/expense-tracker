@@ -1,5 +1,5 @@
-const url = `http://3.88.58.3/report`;
-const expenseUrl = `http://3.88.58.3/expense`;
+const url = `http://3.215.255.202/report`;
+const expenseUrl = `http://3.215.255.202/expense`;
 const token = localStorage.getItem('token')
 const premium = localStorage.getItem('premium')
 window.addEventListener('DOMContentLoaded', async(e)=>{

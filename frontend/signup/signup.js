@@ -1,5 +1,5 @@
 const btn = document.querySelector('#signup')
-const url = `http://3.88.58.3/signup/addUser`
+const url = `http://3.215.255.202/signup/addUser`
 
 addingUser = async (e) => {
     e.preventDefault();

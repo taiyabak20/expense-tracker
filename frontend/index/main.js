@@ -1,7 +1,7 @@
 let list = document.querySelector('#expenses');
 const btn = document.querySelector('.btn');
-const URL = `http://3.88.58.3/expense`;
-const URLpremium = `http://3.88.58.3/premium`;
+const URL = `http://3.215.255.202/expense`;
+const URLpremium = `http://3.215.255.202/premium`;
 
 const token = localStorage.getItem('token')
 let id=null;

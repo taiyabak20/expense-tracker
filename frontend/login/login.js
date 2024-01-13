@@ -1,5 +1,5 @@
 const loginForm = document.querySelector('#login');
-const url = 'http://3.88.58.3/signup/user';
+const url = 'http://3.215.255.202/signup/user';
 
 logingIn = async (e) =>{
     e.preventDefault();
