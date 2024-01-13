@@ -8,5 +8,5 @@ async function forgotPass(e){
     const res = await axios.post(Url, {email: e.target.forgotEmail.value})
     //console.log(res)
     email = ""
-    window.location = '/login'
+    window.location = '/login/login.html'
 }

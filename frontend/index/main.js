@@ -42,13 +42,13 @@ btn.addEventListener('click', async (e) => {
     
   } catch (error) {
     console.log(error);
-    document.querySelector('.expenses').innerHTML=`<a href="/login">Please login properly!</a>`
+    document.querySelector('.expenses').innerHTML=`<a href="/login/login.html">Please login properly!</a>`
   }
 finally{clearInputFields()}
 
 
   function clearInputFields (){
-   document.querySelector('#amount').value = '';
+document.querySelector('#amount').value = '';
 document.querySelector('#description').value = '';
 document.querySelector('#category').value = 'Fuel';}
  
@@ -183,7 +183,7 @@ e.preventDefault();
 document.querySelector('.Logout').addEventListener('click', async(e)=>{
   localStorage.removeItem("token")
   
-  window.location = '/login'
+  window.location = '/login/login.html'
 })
 
 async function leaderBoardShow(e){

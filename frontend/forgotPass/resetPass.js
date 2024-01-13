@@ -30,7 +30,7 @@ async function resetPass(e){
             const res = await axios.post(`${Reseturl}/${resetId}`, {newPass})
             console.log(res)
             if(res.status == 200){
-                window.location = '/login'
+                window.location = '/login/login.html'
             }
         }
         catch(err){
