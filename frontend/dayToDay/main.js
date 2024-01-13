@@ -41,6 +41,7 @@ async function submitdate (e){
         headers: {auth: token}
       })
         const tableBody = document.querySelector('.dateTable');
+        tableBody.textContent = ""
         showData(data, tableBody)
         console.log(data.data)
 
@@ -53,6 +54,7 @@ async function submitmonth (e){
         headers: {auth: token}
       })
       const tableBody = document.querySelector('.monthTable');
+      tableBody.textContent = ""
       showData(data, tableBody)
       console.log(data.data)
 }
@@ -64,6 +66,7 @@ async function submityear (e){
       })
 
       const tableBody = document.querySelector('.yearTable');
+      tableBody.textContent = ""
       showData(data, tableBody)
       console.log(data)
 
@@ -72,7 +75,13 @@ async function submityear (e){
 async function showData(data, tableBody){
     let current_date;
     let sum = 0;
-    let sum2 = 0
+    let sum2 = 0;
+    const row1 = tableBody.insertRow();
+    row1.insertCell(0).innerHTML = `<b>Date</b>`;
+    row1.insertCell(1).innerHTML = `<b>Description</b>`;
+    row1.insertCell(2).innerHTML = `<b>Category</b>`;
+    row1.insertCell(3).innerHTML = `<b>Expense</b>`
+
     data.data.forEach(entry =>{
 
         if(tableBody == document.querySelector('.yearTable')){
@@ -113,7 +122,6 @@ sum += entry.amount;
 sum2 += entry.amount;
 
      const row = tableBody.insertRow();
-
      const dateCell = row.insertCell(0);
      const descriptionCell = row.insertCell(1);
      const categoryCell = row.insertCell(2);
@@ -128,10 +136,10 @@ sum2 += entry.amount;
     })
 
     const row = tableBody.insertRow();
-     const dateCell = row.insertCell(0);
-     const descriptionCell = row.insertCell(1);
-     const categoryCell = row.insertCell(2);
-     const expenseCell = row.insertCell(3).innerHTML = `<b>Total Expense: ${sum}</b>`
+    row.insertCell(0);
+    row.insertCell(1);
+    row.insertCell(2);
+    row.insertCell(3).innerHTML = `<b>Total Expense: ${sum}</b>`
 
      const row2 = tableBody.insertRow();
      row2.insertCell(0)
