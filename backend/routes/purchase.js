@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const auth = require('../controllers/auth')
+const auth = require('../middlewares/auth')
 const paymentsController = require('../controllers/purchase')
 
 router.get('/premium' ,auth ,paymentsController.purchasePremium)
