@@ -1,4 +1,4 @@
-const Url = 'http://3.215.255.202/called/password/forgotpassword';
+const Url = 'http://localhost:3000/called/password/forgotpassword';
 document.querySelector('.forgotPass').addEventListener('submit', forgotPass)
 
 async function forgotPass(e){

@@ -1,116 +1,117 @@
-const sequelize = require('../utils/db')
 const s3service = require('../services/s3services')
-exports.getAll =async (req, res)=>{
-    try{
+const Expense = require('../models/Expense');
+const User = require('../models/User');
+const DownloadedFile = require('../models/filesDownloaded')
+const mongoose = require('mongoose')
+exports.getAll = async (req, res) => {
+    try {
         const isPremium = req.user.isPremiumUser
         const page = req.query.page || 1;
-        //console.log(page)
+        const userId = req.user._id;
         const numOfExpenses = Number(req.body.numOfExpenses)
-        const exp =await req.user.getExpenses({
-            offset : (page - 1)*numOfExpenses,
-            limit: numOfExpenses
-        })
-        const totalExp = req.user.countExpenses();
-        const [expenses, totalExpenses] = await Promise.all([exp, totalExp])
-        const totalPages = Math.ceil(totalExpenses/numOfExpenses);
 
+        const expenses = await Expense.find({ userId })
+            .skip((page - 1) * numOfExpenses)
+            .limit(numOfExpenses);
+
+        const totalExpenses = await Expense.countDocuments({ userId });
+        const totalPages = Math.ceil(totalExpenses / numOfExpenses);
+        //console.log(req.user)
         //console.log(totalExpenses, totalPages)
-        return res.json({expenses, totalExpenses, totalPages, isPremium})
+        return res.json({ expenses, totalExpenses, totalPages, isPremium })
     }
-  
-    catch(err){
+
+    catch (err) {
         console.log(err)
-        return res.status(500).json({success : false, msg: "Internal server error"})
-    } 
+        return res.status(500).json({ success: false, msg: "Internal server error" })
+    }
 }
 
-exports.postExpense =async (req, res)=>{
-    const t = await sequelize.transaction();
-    try
-   { const amount = req.body.amount;
-    const description = req.body.description;
-    const category = req.body.category;
+exports.postExpense = async (req, res) => {
 
-   const data =  await req.user.createExpense({
-        amount: amount,
-        description: description,
-        category: category
-    },
-    { transaction: t })
-    await t.commit();
-    req.user.totalSum += Number(amount);
-    await req.user.save()
-    return res.json({data});   
-}
-    catch(err) {
-        await t.rollback();
-         console.log(err)
-         return res.status(500).json({ error: 'Internal server error' });
-        }
+    try {
+        const amount = req.body.amount;
+        const quantity = req.body.quantity;
+        const category = req.body.category;
+
+        const newExpense = await Expense.create({
+            amount,
+            quantity,
+            category,
+            userId: req.user._id
+        });
+        console.log(newExpense)
+        req.user.totalSum += Number(amount);
+        await req.user.save()
+        return res.json({ data: newExpense });
+    }
+    catch (err) {
+
+        console.error(err);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 exports.deleteExpense = async (req, res) => {
-    const t = await sequelize.transaction();
-
     try {
         const id = req.params.id;
-        const expense = await req.user.getExpenses({ where: { id: id }, transaction: t });
-        if (expense && expense.length > 0) {
-            const expenseAmount = Number(expense[0].amount);
+        console.log(id)
+        const expense = await Expense.findByIdAndDelete({ _id: id, userId: req.user._id });
+        console.log(expense)
+        if (expense) {
+            const expenseAmount = Number(expense.amount);
             req.user.totalSum -= expenseAmount;
             //console.log(expenseAmount , req.user.totalSum)
             await req.user.save();
-            await expense[0].destroy({ transaction: t });
-            await t.commit();
+            
             console.log('Expense deleted');
             return res.status(200).json({ success: true, message: 'Expense deleted successfully' });
         } else {
-            await t.rollback();
+
             return res.status(404).json({ success: false, message: 'Expense not found' });
         }
     } catch (err) {
-        await t.rollback();
+
         console.error(err);
         return res.status(500).json({ success: false, error: 'Internal server error' });
     }
 };
 
 
-exports.editExpense = (req, res)=>{
+exports.editExpense = (req, res) => {
     const id = req.params.id;
-    req.user.getExpenses({where: {id : id}})
-    .then(expense =>{
-        expense[0].amount = req.body.amount,
-        expense[0].description = req.body.description,
-        expense[0].category = req.body.category
-        return expense[0].save()
-    })
-    .then(()=> console.log('update successful'))
-    .catch(err => console.log(err))
+console.log(id)
+    Expense.findById(id)
+        .then(expense => {
+            expense.amount = req.body.amount,
+                expense.description = req.body.description,
+                expense.category = req.body.category
+            return expense.save()
+        })
+        .then(() => console.log('update successful'))
+        .catch(err => console.log(err))
 }
 
-exports.downloadExpense =async (req, res) =>{
+exports.downloadExpense = async (req, res) => {
 
-    try{
-        const expense = await req.user.getExpenses();
-        const stringified = JSON.stringify(expense)
-        const userId = req.user.id;
-        //console.log(userId)
+    try {
+        const expenses = await Expense.find({ userId: req.user._id });
+
+        const stringified = JSON.stringify(expenses)
+        const userId = req.user._id;
+        console.log(userId)
         const filename = `Expense ${userId}/ ${new Date}.txt`;
-        const fileUrl =await s3service.uploadToS3(stringified, filename);
-        await req.user.createDownloadedfile({url: fileUrl})
+        const fileUrl = await s3service.uploadToS3(stringified, filename);
+        await DownloadedFile.create({ url: fileUrl , userId: req.user._id});
+        res.json({ fileUrl, success: true })
 
-        // console.log(req.user)
-        // console.log(fileUrl)
-        res.json({fileUrl, success: true})
-       
     }
-    catch(err){
-        res.status(500).json({fileUrl: '', success: false, err: err})
+    catch (err) {
+        res.status(500).json({ fileUrl: '', success: false, err: err })
     }
 }
 
-exports.downloadedFiles =async (req, res)=>{
-    const urls =await req.user.getDownloadedfiles()
-    return res.json({url : urls})
+exports.downloadedFiles = async (req, res) => {
+    const urls = await DownloadedFile.find({ userId: req.user._id });
+    return res.json({ url: urls })
 }

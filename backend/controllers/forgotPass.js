@@ -1,5 +1,5 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
-const User = require('../models/signup')
+const User = require('../models/User')
 const forgotPass = require('../models/forgotPass');
 const uuid = require('uuid')
 const bcrypt = require('bcrypt')
@@ -7,12 +7,16 @@ require('dotenv').config();
 
 exports.forgotEmail =async (req, res) => {
 const email = req.body.email;
-    const user =await User.findOne({where: { email :email }, attributes: ["name" , "email", "id"]})
+    const user = await User.findOne( {email: email} ) 
+    .select('name email');
 
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
 
     const details = await forgotPass.create({
         id : uuid.v4(),
-        userId: user.id,
+        userId: user._id,
         isActive: true
     })
     //console.log(details.id)
@@ -39,7 +43,7 @@ const email = req.body.email;
             to: receivers,
             subject: 'For resetting Password',
             htmlContent: '<p>Click the link to reset your password</p>'+
-            `<a href="http://3.215.255.202/forgotPass/resetPass.html?reset=${details.id}">click here</a>`,
+            `<a href="http://localhost:3000/forgotPass/resetPass.html?reset=${details.id}">click here</a>`,
         })
         
      }
@@ -53,7 +57,7 @@ exports.passResetReq = async (req, res) =>{
     //console.log(Resetid)
     try{
         const resetReq = await forgotPass.findOne({
-            where : {id: Resetid}
+           id: Resetid
         })
         if(resetReq.isActive){
             //console.log(resetReq)
@@ -68,16 +72,36 @@ exports.passResetReq = async (req, res) =>{
         console.log(err)
     }
 }
-exports.changePass = async(req, res) =>{
+
+exports.changePass = async (req, res) => {
     const newPass = req.body.newPass;
-    const id = req.params.id;
-    const resetUser = await forgotPass.findByPk(id);
-    //console.log(resetUser)
-    const user =  await resetUser.getUser()
-    //console.log(user.password)
-    const hashPass = await bcrypt.hash(newPass,10)
-    //console.log(hashPass)
-    await user.update({password : hashPass})
-    await resetUser.update({isActive : false})
-    return res.json('Password changed')
-}
+    const resetId = req.params.id;
+
+    try {
+        const resetReq = await forgotPass.findOne({ id: resetId });
+
+        if (!resetReq) {
+            return res.status(404).json({ message: 'Reset request not found' });
+        }
+
+        if (!resetReq.isActive) {
+            return res.status(400).json({ message: 'Reset request is no longer active' });
+        }
+
+        const user = await User.findById(resetReq.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const hashPass = await bcrypt.hash(newPass, 10);
+        await user.updateOne({ password: hashPass });
+
+        await resetReq.updateOne({ isActive: false });
+
+        res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

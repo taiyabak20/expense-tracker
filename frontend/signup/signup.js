@@ -1,5 +1,5 @@
 const btn = document.querySelector('#signup')
-const url = `http://3.215.255.202/signup/addUser`
+const url = `http://localhost:3000/signup/addUser`
 
 addingUser = async (e) => {
     e.preventDefault();
@@ -18,6 +18,7 @@ addingUser = async (e) => {
             e.target.nameInput.value = '';
             e.target.emailInput.value = '';
             e.target.passwordInput.value = '';
+            window.location = '../login/login.html'
         } else {
             console.error(`Request failed with status: ${res.status}`);
         }

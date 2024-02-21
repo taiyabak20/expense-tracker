@@ -1,4 +1,4 @@
-const user = require('../models/signup')
+const User = require('../models/User')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
@@ -7,8 +7,8 @@ exports.createUser = async (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
 try {
-    const userExist = await user.findOne({
-        where : {email: email}
+    const userExist = await User.findOne({
+        email
     })
 
     if(userExist){
@@ -17,13 +17,13 @@ try {
     else{
         const saltrounds = 10;
         bcrypt.hash(password, saltrounds, async(err, hash)=>{
-            await user.create({
+            await User.create({
                 name: name,
                 email: email,
                 password: hash
             })
-            console.log(user)
-            return res.status(201).json(user);
+            console.log(User)
+            return res.status(201).json(User);
         })
    }
 }
@@ -36,10 +36,11 @@ try {
 exports.loginUser = async (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
+    console.log(email, password)
 
     try{
-        const userExist = await user.findOne({where: {email: email}})
-
+        const userExist = await User.findOne({email})
+console.log(userExist)
         if(userExist){
             const passwordMatch = await bcrypt.compare(password, userExist.password);
             console.log(password, userExist.password, passwordMatch);

@@ -1,5 +1,5 @@
 const loginForm = document.querySelector('#login');
-const url = 'http://3.215.255.202/signup/user';
+const url = 'http://localhost:3000/signup/user';
 
 logingIn = async (e) =>{
     e.preventDefault();
@@ -17,7 +17,7 @@ console.log(inputs)
         if (res.status == 200){
             console.log(res.data)
             localStorage.setItem('token' ,res.data)
-            window.location= '/index/index.html';
+            window.location= '../index/index.html';
             document.querySelector('.notFound').textContent ='login success'
         }
        

@@ -7,7 +7,7 @@ const paymentsController = require('../controllers/purchase')
 
 router.get('/premium' ,auth ,paymentsController.purchasePremium)
 
-router.post('/updateTransaction' , auth , paymentsController.successfullTransaction)
+router.post('/updateTransaction' , auth , paymentsController.successfulTransaction)
 
 router.post('/failed' , auth ,paymentsController.failedTransaction)
 

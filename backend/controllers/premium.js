@@ -1,20 +1,13 @@
-const expenses = require('../models/expenses')
-const User = require('../models/signup')
-const sequelize = require('sequelize');
+const User = require('../models/User');
+exports.showLeaderBoard = async (req, res) => {
+    try {
+        const users = await User.find({})
+            .select('id name totalSum') 
+            .sort({ totalSum: -1 }); 
 
-exports.showLeaderBoard = async (req, res) =>{
- try{
-      User.findAll({
-        attributes: ["id" , "name", "totalSum"],
-        order: [['totalSum', 'DESC']]
-      })
-.then(result =>{
-  //console.log(result)
-  return res.json(result)
-})
- }
- catch(err){
-  console.log(err)
-  res.status(500).json(err)
- }
-}
+        res.json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

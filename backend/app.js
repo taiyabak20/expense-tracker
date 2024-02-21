@@ -6,20 +6,16 @@ const compression = require('compression')
 const morgan = require('morgan')
 const path = require('path')
 const fs = require('fs')
+const mongoose = require('mongoose');
+
 require('dotenv').config()
 const bodyParser = require('body-parser')
-const sequelize = require('./utils/db')
 const expenseRoutes = require('./routes/routes')
 const signupRoutes = require('./routes/signup')
 const purchaseRoutes = require('./routes/purchase')
 const premiumRoutes = require('./routes/premium')
 const forgotPassRoutes = require('./routes/forgotPass')
 const reportRoutes = require('./routes/report')
-const User = require('./models/signup')
-const Expense = require('./models/expenses')
-const Order = require('./models/orders')
-const ForgotPasswordRequests = require('./models/forgotPass')
-const Downloadedfiles = require('./models/filesDownloaded')
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
  {flag: 'a'});
 app.use(cors())
@@ -37,20 +33,13 @@ app.use('/report', reportRoutes)
 //     res.sendFile(path.join(__dirname, `../${req.url}`))
 // })
 app.use(express.static(path.join(__dirname , '..','frontend/')))
-User.hasMany(Expense);
-Expense.belongsTo(User)
-User.hasMany(Order)
-Order.belongsTo(User)
-User.hasMany(ForgotPasswordRequests)
-ForgotPasswordRequests.belongsTo(User)
-User.hasMany(Downloadedfiles);
-Downloadedfiles.belongsTo(User)
 
-sequelize
-.sync()
-// .sync({force: true})
-.then(result => {
-    app.listen(process.env.PORT || 3000); 
-    console.log('app is running')
+
+mongoose
+.connect(process.env.MONOGO_URL)
+.then(result =>{
+    app.listen(process.env.PORT || 3000);
 })
-.catch(err => console.log(err))
+.catch(err =>{
+    console.log(err);
+})
